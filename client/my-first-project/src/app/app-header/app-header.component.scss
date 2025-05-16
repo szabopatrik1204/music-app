@@ -1,0 +1,21 @@
+.header-container {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e16610;
+  padding: 0 24px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.header-logo {
+  height: 100px;
+  margin-right: 16px;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+}

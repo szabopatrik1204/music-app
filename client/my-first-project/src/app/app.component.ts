@@ -4,6 +4,7 @@ import { AComponentComponent } from './a-component/a-component.component';
 import { BComponentComponent } from './b-component/b-component.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { AppHeaderComponent } from './app-header/app-header.component';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import { SignupComponent } from './signup/signup.component';
     AComponentComponent,
     BComponentComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    AppHeaderComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
