@@ -3,16 +3,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.User = exports.UserRole = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const SALT_FACTOR = 10;
+var UserRole;
+(function (UserRole) {
+    UserRole["Admin"] = "admin";
+    UserRole["Artist"] = "artist";
+    UserRole["Listener"] = "listener";
+})(UserRole || (exports.UserRole = UserRole = {}));
 const UserSchema = new mongoose_1.default.Schema({
     email: { type: String, required: true },
     name: { type: String, required: false },
     address: { type: String, required: false },
     nickname: { type: String, required: false },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    role: { type: String, enum: Object.values(UserRole), default: UserRole.Listener }
 });
 // hook
 UserSchema.pre('save', function (next) {

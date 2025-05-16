@@ -22,7 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class UserManagementComponent {
   users!: User[];
-  columns = ['email', 'name', 'address', 'nickname', 'delete'];
+  columns = ['email', 'name', 'address', 'nickname', 'role', 'delete'];
 
   constructor(
     private userService: UserService,

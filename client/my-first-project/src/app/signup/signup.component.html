@@ -21,6 +21,14 @@
             <input matInput formControlName="nickname" type="text" placeholder="Nickname" />
         </mat-form-field>
         <mat-form-field appearance="fill">
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="role" required>
+                <mat-option value="admin">Admin</mat-option>
+                <mat-option value="artist">Artist</mat-option>
+                <mat-option value="listener">Listener</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Password</mat-label>
             <input matInput formControlName="password" type="password" placeholder="Password" required [ngClass]="{'invalid-input': signupForm.get('password')?.errors}" />
         </mat-form-field>

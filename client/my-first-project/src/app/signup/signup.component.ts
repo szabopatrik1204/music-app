@@ -5,13 +5,15 @@ import { AuthService } from '../shared/services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
 
 // FormsModule, ReactiveFormsModule
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, MatButtonModule, MatInputModule, MatFormFieldModule],
+  imports: [ReactiveFormsModule, CommonModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatOption, MatSelect],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })
@@ -31,7 +33,8 @@ export class SignupComponent implements OnInit {
       address: [''],
       nickname: [''],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', Validators.required],
+      role: ['', Validators.required]
     }, {
       validator: this.mustMatch('password', 'confirmPassword')
     })

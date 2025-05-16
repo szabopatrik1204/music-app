@@ -3,12 +3,19 @@ import bcrypt from 'bcrypt';
 
 const SALT_FACTOR = 10;
 
+export enum UserRole {
+    Admin = 'admin',
+    Artist = 'artist',
+    Listener = 'listener'
+}
+
 interface IUser extends Document {
     email: string;
     name?: string;
     address?: string;
     nickname?: string;
     password: string;
+    role?: UserRole;
     comparePassword: (candidatePassword: string, callback: (error: Error | null, isMatch: boolean) => void) => void;
 }
 
@@ -17,7 +24,8 @@ const UserSchema: Schema<IUser> = new mongoose.Schema({
     name: { type: String, required: false },
     address: { type: String, required: false },
     nickname: { type: String, required: false },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    role: { type: String, enum: Object.values(UserRole), default: UserRole.Listener }
 });
 
 // hook

@@ -41,6 +41,11 @@
             <td mat-cell *matCellDef="let element">{{element.nickname}}</td>
         </ng-container>
 
+        <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef>Role</th>
+            <td mat-cell *matCellDef="let element">{{element.role}}</td>
+        </ng-container>
+
         <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef>Delete</th>
             <td mat-cell *matCellDef="let element; let i = index"><mat-icon fontIcon="delete" (click)="deleteUser(element._id, i)"></mat-icon></td>
