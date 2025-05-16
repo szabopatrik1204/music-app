@@ -4,7 +4,12 @@
     align-items: center;
 }
 
-.login-form {
+mat-form-field {
+    margin-left: 0;
+    width: 100%;
+}
+
+ .login-form {
     display: flex;
     flex-direction: column;
     width: 80%;
@@ -14,13 +19,13 @@
     padding: 20px;
     gap: 10px;
 }
-
+/*
 .login-form input {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     outline: none;
-}
+} */
 
 .login-form .buttons {
     display: flex;
@@ -32,31 +37,31 @@
     cursor: pointer;
     border: none;
     border-radius: 5px;
-    background-color: cornflowerblue;
+//    background-color: cornflowerblue;
     width: 100%;
-    color: white;
+//    color: white;
     padding: 10px;
 }
 
-.login-form button:hover {
-    background-color: rgb(50, 74, 120);
-}
+// .login-form button:hover {
+//     background-color: rgb(50, 74, 120);
+// }
 
-.login-form button[type="button"] {
-    background-color: rgb(101, 231, 101);
-}
+// .login-form button[type="button"] {
+//     background-color: rgb(101, 231, 101);
+// }
 
-.login-form button[type="button"]:hover {
-    background-color: rgb(57, 129, 57);
-}
+// .login-form button[type="button"]:hover {
+//     background-color: rgb(57, 129, 57);
+// }
 
-.login-form button[type="reset"] {
-    background-color: rgb(211, 76, 76);
-}
+// .login-form button[type="reset"] {
+//     background-color: rgb(211, 76, 76);
+// }
 
-.login-form button[type="reset"]:hover {
-    background-color: rgb(129, 45, 45);
-}
+// .login-form button[type="reset"]:hover {
+//     background-color: rgb(129, 45, 45);
+// }
 
 .invalid-input {
     border-color: #ff0000 !important;

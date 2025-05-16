@@ -1,3 +1,22 @@
+@use '@angular/material' as mat;
+
+//orange palette
+$custom-orange-palette: mat.define-palette(mat.$orange-palette);
+$custom-accent-palette: mat.define-palette(mat.$pink-palette);
+$custom-warn-palette: mat.define-palette(mat.$red-palette);
+
+// Create the light theme
+$custom-theme: mat.define-light-theme((
+  color: (
+    primary: $custom-orange-palette,
+    accent: $custom-accent-palette,
+    warn: $custom-warn-palette,
+  )
+));
+
+// Apply the theme to all Angular Material components
+@include mat.all-component-themes($custom-theme);
+
 /* You can add global styles to this file, and also import other style files */
 body {
     height: 100vh;
@@ -11,3 +30,5 @@ app-root {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
