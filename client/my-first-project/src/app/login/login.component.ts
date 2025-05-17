@@ -34,7 +34,8 @@ export class LoginComponent {
               // navigation
               console.log(data);
               this.isLoading = false;
-              this.router.navigateByUrl('/user-management');
+              this.router.navigateByUrl('/music-upload');
+              // this.router.navigateByUrl('/user-management');
             }
           }, error: (err) => {
             console.log(err);

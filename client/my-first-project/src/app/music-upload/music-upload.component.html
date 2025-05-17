@@ -1,0 +1,7 @@
+<form (ngSubmit)="onSubmit()" #uploadForm="ngForm">
+  <input type="file" (change)="onFileSelected($event)" required />
+  <input type="text" [(ngModel)]="title" name="title" placeholder="Cím" required />
+  <input type="text" [(ngModel)]="albumName" name="albumName" placeholder="Album név (opcionális)" />
+  <input type="date" [(ngModel)]="releaseDate" name="releaseDate" required />
+  <button type="submit">Feltöltés</button>
+</form>

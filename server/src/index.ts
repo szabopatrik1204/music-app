@@ -9,18 +9,20 @@ import passport from 'passport';
 import { configurePassport } from './passport/passport';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import multer from 'multer';
+import { GridFsStorage } from 'multer-gridfs-storage';
 
 const app = express();
 const port = 5000;
 const dbUrl = 'mongodb://localhost:6000/my_db';
 
 // mongodb connection
-mongoose.connect(dbUrl).then((_) => {
-    console.log('Successfully connected to MongoDB.');
-}).catch(error => {
-    console.log(error);
-    return;
-});
+// mongoose.connect(dbUrl).then((_) => {
+//     console.log('Successfully connected to MongoDB.');
+// }).catch(error => {
+//     console.log(error);
+//     return;
+// });
 
 const whitelist = ['*', 'http://localhost:4200']
 const corsOptions = {
@@ -55,11 +57,29 @@ app.use(passport.session());
 
 configurePassport(passport);
 
-app.use('/app', configureRoutes(passport, express.Router()));
+// app.use('/app', configureRoutes(passport, express.Router()));
 
-app.listen(port, () => {
-    console.log('Server is listening on port ' + port.toString());
-});
+// app.listen(port, () => {
+//     console.log('Server is listening on port ' + port.toString());
+// });
+
+mongoose.connect(dbUrl)
+  .then(() => {
+    const storage = new GridFsStorage({
+        url: dbUrl,
+        file: (req, file) => ({
+            filename: file.originalname,
+            bucketName: 'music'
+        })
+    });
+    const upload = multer({ storage });
+
+    app.use('/app', configureRoutes(passport, express.Router(), upload));
+    app.listen(5000, () => console.log('Server running on port 5000'));
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+  });
 
 console.log('After server is ready.');
 
