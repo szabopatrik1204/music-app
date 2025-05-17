@@ -5,13 +5,12 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-
-
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-music-browser',
   standalone: true,
-  imports: [DatePipe, CommonModule, MatIconModule, MatButtonModule, FormsModule],
+  imports: [DatePipe, CommonModule, MatIconModule, MatButtonModule, FormsModule, MatCardModule],
   templateUrl: './music-browser.component.html',
   styleUrl: './music-browser.component.scss'
 })
@@ -19,6 +18,8 @@ export class MusicBrowserComponent {
 
   tracks: any[] = [];
   myNickname: string = '';
+  filteredTracks: any[] = [];
+  searchText: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -29,8 +30,18 @@ export class MusicBrowserComponent {
           ...track,
           newComment: ''
         }));
-        console.log('Tracks:', this.tracks);
+        this.filterTracks();
       });
+
+    this.http.get<{nickname: string}>('http://localhost:5000/app/me', { withCredentials: true })
+      .subscribe(user => this.myNickname = user.nickname);
+  }
+
+  filterTracks() {
+    const search = this.searchText.trim().toLowerCase();
+    this.filteredTracks = this.tracks.filter(track =>
+      track.title.toLowerCase().includes(search)
+    );
   }
 
   likeTrack(track: any) {

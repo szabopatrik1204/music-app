@@ -1,4 +1,11 @@
-<div *ngFor="let track of tracks">
+<mat-card class="search-bar-card">
+  <div class="search-bar">
+    <input matInput placeholder="Keresés címre..." [(ngModel)]="searchText" (keyup.enter)="filterTracks()" class="search-input"/>
+    <button mat-raised-button color="primary" (click)="filterTracks()">Keresés</button>
+  </div>
+</mat-card>
+
+<div *ngFor="let track of filteredTracks">
   <div class="track-card">
     <div><strong>Cím:</strong> {{ track.title }}</div>
     <div><strong>Előadó:</strong> {{ track.artistNickname }}</div>

@@ -38,3 +38,19 @@ audio {
   margin-top: 12px;
   width: 100%;
 }
+
+.search-bar-card {
+  max-width: 500px;
+  margin: 24px auto 32px auto;
+  padding: 16px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+}
