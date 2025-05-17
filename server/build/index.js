@@ -50,6 +50,8 @@ const sessionOptions = {
 app.use((0, express_session_1.default)(sessionOptions));
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 (0, passport_2.configurePassport)(passport_1.default);
 // app.use('/app', configureRoutes(passport, express.Router()));
 // app.listen(port, () => {

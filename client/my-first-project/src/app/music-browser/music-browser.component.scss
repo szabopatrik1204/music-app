@@ -1,0 +1,40 @@
+@use '@angular/material' as mat;
+
+.track-card:first-child {
+  margin-top: 0;
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.track-card {
+  background: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 24px 32px;
+  margin: 18px 0;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+
+.track-card:hover {
+  background-color: #e1671017;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.16);
+}
+
+.track-card div {
+  margin: 6px 0;
+  width: 100%;
+  text-align: center;
+}
+
+audio {
+  margin-top: 12px;
+  width: 100%;
+}

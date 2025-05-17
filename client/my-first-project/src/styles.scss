@@ -23,12 +23,18 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
 }
 
 app-root {
+    max-height: 100vh;
+    overflow-y: auto;
     width: 100%;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html {
+  height: 100%; 
+}
+
 
 

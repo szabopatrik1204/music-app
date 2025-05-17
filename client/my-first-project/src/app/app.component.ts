@@ -5,6 +5,8 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { MusicUploadComponent } from './music-upload/music-upload.component';
+import { AlbumCreateComponent } from './album-create/album-create.component';
+import { MusicBrowserComponent } from './music-browser/music-browser.component';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,9 @@ import { MusicUploadComponent } from './music-upload/music-upload.component';
     LoginComponent,
     SignupComponent,
     AppHeaderComponent,
-    MusicUploadComponent
+    MusicUploadComponent,
+    AlbumCreateComponent,
+    MusicBrowserComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

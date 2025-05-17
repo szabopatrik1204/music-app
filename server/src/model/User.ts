@@ -1,5 +1,7 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
+import { IProfile } from './Profile';
+import { IAlbum } from './Album';
 
 const SALT_FACTOR = 10;
 
@@ -15,6 +17,8 @@ interface IUser extends Document {
     address?: string;
     nickname?: string;
     password: string;
+    profileId?: mongoose.Types.ObjectId;
+    albumIds?: mongoose.Types.ObjectId[];
     role?: UserRole;
     comparePassword: (candidatePassword: string, callback: (error: Error | null, isMatch: boolean) => void) => void;
 }
@@ -25,6 +29,8 @@ const UserSchema: Schema<IUser> = new mongoose.Schema({
     address: { type: String, required: false },
     nickname: { type: String, required: false },
     password: { type: String, required: true },
+    profileId: { type: Schema.Types.ObjectId, ref: 'Profile', required: false },
+    albumIds: { type: [Schema.Types.ObjectId], ref: 'Album', required: false },
     role: { type: String, enum: Object.values(UserRole), default: UserRole.Listener }
 });
 

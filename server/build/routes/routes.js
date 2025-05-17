@@ -16,11 +16,61 @@ exports.configureRoutes = void 0;
 const main_class_1 = require("../main-class");
 const User_1 = require("../model/User");
 const Track_1 = __importDefault(require("../model/Track"));
+const Album_1 = __importDefault(require("../model/Album"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const mongodb_1 = require("mongodb");
 const configureRoutes = (passport, router, upload) => {
     router.get('/', (req, res) => {
         let myClass = new main_class_1.MainClass();
         res.status(200).send('Hello, World!');
     });
+    router.post('/upload-album', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const userId = req.user._id;
+            const { name, description, releaseDate } = req.body;
+            const album = new Album_1.default({
+                name,
+                description,
+                releaseDate,
+                owner: userId
+            });
+            yield album.save();
+            // Hozzáadás a user albums tömbjéhez
+            yield User_1.User.findByIdAndUpdate(userId, { $push: { albumIds: album._id } });
+            res.status(200).json(album);
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
+    router.get('/get-all-tracks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const tracks = yield Track_1.default.find();
+            res.status(200).json(tracks);
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
+    router.get('/track-file/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const fileId = new mongoose_1.default.Types.ObjectId(req.params.id);
+            const db = mongoose_1.default.connection.db;
+            const bucket = new mongodb_1.GridFSBucket(db, { bucketName: 'music' });
+            const downloadStream = bucket.openDownloadStream(fileId);
+            res.set('Content-Type', 'audio/mpeg');
+            downloadStream.pipe(res);
+            downloadStream.on('error', () => {
+                res.status(404).json({ error: 'File not found' });
+            });
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
     router.post('/upload-music', upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { title, albumName, releaseDate } = req.body;

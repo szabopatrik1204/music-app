@@ -3,14 +3,72 @@ import { MainClass } from '../main-class';
 import { PassportStatic } from 'passport';
 import { User } from '../model/User';
 import Track from '../model/Track';
+import Album from '../model/Album';
 import multer from 'multer';
 import { GridFsStorage } from 'multer-gridfs-storage';
+import mongoose from 'mongoose';
+import { GridFSBucket } from 'mongodb';
 
 export const configureRoutes = (passport: PassportStatic, router: Router, upload: multer.Multer): Router => {
 
     router.get('/', (req: Request, res: Response) => {
         let myClass = new MainClass();
         res.status(200).send('Hello, World!');
+    });
+
+    router.post('/upload-album', async (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const userId = (req.user as any)._id;
+            const { name, description, releaseDate } = req.body;
+            const album = new Album({
+                name,
+                description,
+                releaseDate,
+                owner: userId
+            });
+            await album.save();
+
+            // Hozzáadás a user albums tömbjéhez
+            await User.findByIdAndUpdate(
+                userId,
+                { $push: { albumIds: album._id } }
+            );
+
+            res.status(200).json(album);
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }); 
+
+    router.get('/get-all-tracks', async (req: Request, res: Response) => {
+        try {
+            const tracks = await Track.find();
+            res.status(200).json(tracks);
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
+    });
+
+    router.get('/track-file/:id', async (req: Request, res: Response) => {
+        try {
+            const fileId = new mongoose.Types.ObjectId(req.params.id);
+            const db = mongoose.connection.db;
+            const bucket = new GridFSBucket(db, { bucketName: 'music' });
+
+            const downloadStream = bucket.openDownloadStream(fileId);
+
+            res.set('Content-Type', 'audio/mpeg');
+            downloadStream.pipe(res);
+
+            downloadStream.on('error', () => {
+                res.status(404).json({ error: 'File not found' });
+            });
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
     });
 
     router.post('/upload-music', upload.single('file'), async (req, res) => {

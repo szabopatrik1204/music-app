@@ -1,0 +1,20 @@
+<form (ngSubmit)="onSubmit()" #albumForm="ngForm" class="album-create-form">
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Album címe</mat-label>
+    <input matInput type="text" [(ngModel)]="name" name="name" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Leírás</mat-label>
+    <textarea matInput [(ngModel)]="description" name="description"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Megjelenés dátuma</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="releaseDate" name="releaseDate" required>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Album létrehozása</button>
+</form>
