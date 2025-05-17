@@ -1,21 +1,39 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-music-upload',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatIcon],
   templateUrl: './music-upload.component.html',
   styleUrl: './music-upload.component.scss'
 })
 export class MusicUploadComponent {
 selectedFile: File | null = null;
   title = '';
+  albumId: string = '';
   albumName = '';
   releaseDate = '';
+  albums: any[] = [];
 
   constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.http.get<any[]>('http://localhost:5000/app/get-my-albums', { withCredentials: true })
+      .subscribe(albums => {
+        console.log('Albums:', albums);
+        this.albums = albums;
+      });
+  }
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
@@ -26,8 +44,7 @@ selectedFile: File | null = null;
     const formData = new FormData();
     formData.append('file', this.selectedFile);
     formData.append('title', this.title);
-//    formData.append('artistId', ''); // pl. bejelentkezett user id
-    if (this.albumName) formData.append('albumName', this.albumName);
+    if (this.albumId) formData.append('albumId', this.albumId);
     formData.append('releaseDate', this.releaseDate);
 
     this.http.post('http://localhost:5000/app/upload-music', formData, { withCredentials: true })

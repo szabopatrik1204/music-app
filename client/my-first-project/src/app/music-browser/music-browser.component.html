@@ -2,7 +2,7 @@
   <div class="track-card">
     <div><strong>Cím:</strong> {{ track.title }}</div>
     <div><strong>Előadó:</strong> {{ track.artistNickname }}</div>
-    <div><strong>Album:</strong> {{ track.albumId || '-' }}</div>
+    <div><strong>Album:</strong> {{ track.owner?.name || '-' }}</div>
     <div><strong>Megjelenés:</strong> {{ track.releaseDate | date }}</div>
     <audio controls preload="auto" *ngIf="track.fileId">
       <source [src]="'http://localhost:5000/app/track-file/' + track.fileId" type="audio/mpeg">

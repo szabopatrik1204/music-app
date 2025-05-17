@@ -43,9 +43,22 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
         }
     }); 
 
+    router.get('/get-my-albums', async (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const userId = (req.user as any)._id;
+            const albums = await Album.find({ owner: userId });
+            res.status(200).json(albums);
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
+    });
+
     router.get('/get-all-tracks', async (req: Request, res: Response) => {
         try {
-            const tracks = await Track.find();
+            const tracks = await Track.find().populate('owner', 'name');
             res.status(200).json(tracks);
         } catch (err) {
             res.status(500).json({ error: err });
@@ -73,7 +86,7 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
 
     router.post('/upload-music', upload.single('file'), async (req, res) => {
         try {
-            const { title, albumName, releaseDate } = req.body;
+            const { title, albumId, releaseDate } = req.body;
 
             const artistNickname = req.user && (req.user as any).nickname;
 
@@ -90,13 +103,20 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
             const track = new Track({
                 title,
                 artistNickname,
-                albumName,
+                owner: albumId,
                 fileId,
                 releaseDate,
                 isApproved: false
             });
 
             await track.save();
+
+            if (albumId) {
+                await Album.findByIdAndUpdate(
+                    albumId,
+                    { $push: { trackIds: track._id } }
+                );
+            }
 
             res.status(200).json({ file: req.file, track });
         } catch (err) {

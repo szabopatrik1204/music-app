@@ -22,6 +22,7 @@ const TrackSchema = new Schema<ITrack>({
   profileId: { type: Schema.Types.ObjectId, ref: 'Profile', required: false },
   reviewId: { type: Schema.Types.ObjectId, ref: 'Review', required: false },
   releaseDate: { type: Date, required: true },
+  owner: { type: Schema.Types.ObjectId, ref: 'Album', required: false },
   isApproved: { type: Boolean, default: false }
 });
 

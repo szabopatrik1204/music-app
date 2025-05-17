@@ -1,7 +1,26 @@
-<form (ngSubmit)="onSubmit()" #uploadForm="ngForm">
-  <input type="file" (change)="onFileSelected($event)" required />
-  <input type="text" [(ngModel)]="title" name="title" placeholder="Cím" required />
-  <input type="text" [(ngModel)]="albumName" name="albumName" placeholder="Album név (opcionális)" />
-  <input type="date" [(ngModel)]="releaseDate" name="releaseDate" required />
-  <button type="submit">Feltöltés</button>
+<form (ngSubmit)="onSubmit()" #uploadForm="ngForm" class="music-upload-form">
+  <mat-label>Zene feltöltés</mat-label><br />
+  <input type="file" (change)="onFileSelected($event)" required class="file-input">
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Cím</mat-label>
+    <input matInput type="text" [(ngModel)]="title" name="title" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Album</mat-label>
+    <mat-select [(ngModel)]="albumId" name="albumId">
+      <mat-option value="">Nincs album</mat-option>
+      <mat-option *ngFor="let album of albums" [value]="album._id">{{ album.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Megjelenés dátuma</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="releaseDate" name="releaseDate" required>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Feltöltés</button>
 </form>

@@ -20,6 +20,7 @@ export class MusicBrowserComponent {
     this.http.get<any[]>('http://localhost:5000/app/get-all-tracks')
       .subscribe(data => {
         this.tracks = data;
+        console.log('Tracks:', this.tracks);
       });
   }
 
