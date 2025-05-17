@@ -8,5 +8,30 @@
       <source [src]="'http://localhost:5000/app/track-file/' + track.fileId" type="audio/mpeg">
       A böngésződ nem támogatja az audio lejátszást.
     </audio>
+    <div class="track-actions">
+      <button mat-icon-button
+        (click)="likeTrack(track)"
+        [disabled]="isLikedByMe(track)">
+        <mat-icon [color]="isLikedByMe(track) ? 'primary' : ''">thumb_up</mat-icon>
+      </button>
+      <span *ngIf="track.review?.like?.length">({{ track.review.like.length }})</span>
+      <button mat-icon-button (click)="shareTrack(track)">
+        <mat-icon>share</mat-icon>
+      </button>
+      <span *ngIf="track.review?.shared?.length">({{ track.review.shared.length }})</span>
+    </div>
+
+    <div class="comments-section">
+      <form (ngSubmit)="addComment(track)">
+        <input [(ngModel)]="track.newComment" name="comment-{{track._id}}" placeholder="Írj kommentet..." class="comment-input" />
+        <button mat-button type="submit">Küldés</button>
+      </form>
+      <div class="comments-list">
+        <div *ngFor="let comment of track.review?.comment || []" class="comment">
+          <strong>{{ comment.nickname }}:</strong> {{ comment.text }}
+          <span class="comment-date">{{ comment.createdAt | date:'short' }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

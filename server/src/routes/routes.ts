@@ -4,6 +4,7 @@ import { PassportStatic } from 'passport';
 import { User } from '../model/User';
 import Track from '../model/Track';
 import Album from '../model/Album';
+import Review from '../model/Review';
 import multer from 'multer';
 import { GridFsStorage } from 'multer-gridfs-storage';
 import mongoose from 'mongoose';
@@ -41,7 +42,70 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
         } catch (err) {
             res.status(500).json({ error: err });
         }
-    }); 
+    });
+
+    router.post('/add-review', async (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const { trackId, commentText } = req.body;
+            const nickname = (req.user as any).nickname;
+
+            if (!trackId || !commentText) {
+                return res.status(400).json({ error: 'trackId and commentText are required' });
+            }
+
+            let review = await Review.findOne({ owner: trackId });
+            if (!review) {
+                review = new Review({ owner: trackId, like: [], comment: [], shared: [] });
+            }
+
+            review.comment.push({
+                nickname,
+                text: commentText,
+                createdAt: new Date()
+            });
+
+            await review.save();
+
+            res.status(200).json(review);
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
+    });
+
+    router.post('/add-like', async (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const { trackId } = req.body;
+            const nickname = (req.user as any).nickname;
+            if (!trackId) {
+                return res.status(400).json({ error: 'trackId is required' });
+            }
+            let review = await Review.findOne({ owner: trackId });
+            if (!review) {
+                review = new Review({ owner: trackId, like: [], comment: [], shared: [] });
+            }
+            if (!review.like.includes(nickname)) {
+                review.like.push(nickname);
+                await review.save();
+            }
+            res.status(200).json(review);
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
+    });
+    
+    router.get('/me', (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        const nickname = (req.user as any).nickname;
+        res.status(200).json({ nickname });
+    });
 
     router.get('/get-my-albums', async (req: Request, res: Response) => {
         if (!req.isAuthenticated() || !req.user) {
@@ -58,8 +122,19 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
 
     router.get('/get-all-tracks', async (req: Request, res: Response) => {
         try {
-            const tracks = await Track.find().populate('owner', 'name');
-            res.status(200).json(tracks);
+        const tracks = await Track.find().populate('owner', 'name');
+
+        const trackIds = tracks.map(track => track._id);
+        const reviews = await Review.find({ owner: { $in: trackIds } });
+
+        const tracksWithReviews = tracks.map(track => {
+            const review = reviews.find(r => r.owner.toString() === track._id.toString());
+            return {
+                ...track.toObject(),
+                review: review ? review.toObject() : { like: [], shared: [], comment: [] }
+            };
+        });
+            res.status(200).json(tracksWithReviews);
         } catch (err) {
             res.status(500).json({ error: err });
         }

@@ -17,6 +17,7 @@ const main_class_1 = require("../main-class");
 const User_1 = require("../model/User");
 const Track_1 = __importDefault(require("../model/Track"));
 const Album_1 = __importDefault(require("../model/Album"));
+const Review_1 = __importDefault(require("../model/Review"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const mongodb_1 = require("mongodb");
 const configureRoutes = (passport, router, upload) => {
@@ -46,10 +47,86 @@ const configureRoutes = (passport, router, upload) => {
             res.status(500).json({ error: err });
         }
     }));
+    router.post('/add-review', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const { trackId, commentText } = req.body;
+            const nickname = req.user.nickname;
+            if (!trackId || !commentText) {
+                return res.status(400).json({ error: 'trackId and commentText are required' });
+            }
+            let review = yield Review_1.default.findOne({ owner: trackId });
+            if (!review) {
+                review = new Review_1.default({ owner: trackId, like: [], comment: [], shared: [] });
+            }
+            review.comment.push({
+                nickname,
+                text: commentText,
+                createdAt: new Date()
+            });
+            yield review.save();
+            res.status(200).json(review);
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
+    router.post('/add-like', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const { trackId } = req.body;
+            const nickname = req.user.nickname;
+            if (!trackId) {
+                return res.status(400).json({ error: 'trackId is required' });
+            }
+            let review = yield Review_1.default.findOne({ owner: trackId });
+            if (!review) {
+                review = new Review_1.default({ owner: trackId, like: [], comment: [], shared: [] });
+            }
+            if (!review.like.includes(nickname)) {
+                review.like.push(nickname);
+                yield review.save();
+            }
+            res.status(200).json(review);
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
+    router.get('/me', (req, res) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        const nickname = req.user.nickname;
+        res.status(200).json({ nickname });
+    });
+    router.get('/get-my-albums', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const userId = req.user._id;
+            const albums = yield Album_1.default.find({ owner: userId });
+            res.status(200).json(albums);
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
     router.get('/get-all-tracks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const tracks = yield Track_1.default.find();
-            res.status(200).json(tracks);
+            const tracks = yield Track_1.default.find().populate('owner', 'name');
+            const trackIds = tracks.map(track => track._id);
+            const reviews = yield Review_1.default.find({ owner: { $in: trackIds } });
+            const tracksWithReviews = tracks.map(track => {
+                const review = reviews.find(r => r.owner.toString() === track._id.toString());
+                return Object.assign(Object.assign({}, track.toObject()), { review: review ? review.toObject() : { like: [], shared: [], comment: [] } });
+            });
+            res.status(200).json(tracksWithReviews);
         }
         catch (err) {
             res.status(500).json({ error: err });
@@ -73,7 +150,7 @@ const configureRoutes = (passport, router, upload) => {
     }));
     router.post('/upload-music', upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { title, albumName, releaseDate } = req.body;
+            const { title, albumId, releaseDate } = req.body;
             const artistNickname = req.user && req.user.nickname;
             if (!artistNickname) {
                 return res.status(401).json({ error: 'Not authenticated' });
@@ -85,12 +162,15 @@ const configureRoutes = (passport, router, upload) => {
             const track = new Track_1.default({
                 title,
                 artistNickname,
-                albumName,
+                owner: albumId,
                 fileId,
                 releaseDate,
                 isApproved: false
             });
             yield track.save();
+            if (albumId) {
+                yield Album_1.default.findByIdAndUpdate(albumId, { $push: { trackIds: track._id } });
+            }
             res.status(200).json({ file: req.file, track });
         }
         catch (err) {
