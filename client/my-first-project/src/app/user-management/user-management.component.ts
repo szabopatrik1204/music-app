@@ -43,17 +43,6 @@ export class UserManagementComponent {
     });
   }
 
-  logout() {
-    this.authService.logout().subscribe({
-      next: (data) => {
-        console.log(data);
-        this.router.navigateByUrl('/login');
-      }, error: (err) => {
-        console.log(err);
-      }
-    });
-  }
-
   deleteUser(id: string, n: number) {
     const dialogRef = this.dialog.open(DialogComponent);
 

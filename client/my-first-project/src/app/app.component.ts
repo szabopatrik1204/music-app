@@ -10,6 +10,7 @@ import { MusicBrowserComponent } from './music-browser/music-browser.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MusicManagementComponent } from './music-management/music-management.component';
 import { ArtistProfileComponent } from './artist-profile/artist-profile.component';
+import { ArtistStatisticsComponent } from './artist-statistics/artist-statistics.component';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NgIf } from '@angular/common';

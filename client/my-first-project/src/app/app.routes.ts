@@ -11,5 +11,6 @@ export const routes: Routes = [
     { path: 'music-browser', loadComponent: () => import('./music-browser/music-browser.component').then(c => c.MusicBrowserComponent), canActivate: [authGuard] },
     { path: 'music-management', loadComponent: () => import('./music-management/music-management.component').then(c => c.MusicManagementComponent), canActivate: [authGuard] },
     { path: 'artist-profile', loadComponent: () => import('./artist-profile/artist-profile.component').then(c => c.ArtistProfileComponent), canActivate: [authGuard] },
+    { path: 'artist-statistics', loadComponent: () => import('./artist-statistics/artist-statistics.component').then(c => c.ArtistStatisticsComponent), canActivate: [authGuard] },
     { path: '**', redirectTo: 'login' }
 ];

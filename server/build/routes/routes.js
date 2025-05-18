@@ -94,8 +94,10 @@ const configureRoutes = (passport, router, upload) => {
                 return res.status(400).json({ error: 'trackId and commentText are required' });
             }
             let review = yield Review_1.default.findOne({ owner: trackId });
+            let isNewReview = false;
             if (!review) {
                 review = new Review_1.default({ owner: trackId, like: [], comment: [], shared: [] });
+                isNewReview = true;
             }
             review.comment.push({
                 nickname,
@@ -103,6 +105,9 @@ const configureRoutes = (passport, router, upload) => {
                 createdAt: new Date()
             });
             yield review.save();
+            if (isNewReview) {
+                yield Track_1.default.findByIdAndUpdate(trackId, { reviewId: review._id });
+            }
             res.status(200).json(review);
         }
         catch (err) {
@@ -198,6 +203,39 @@ const configureRoutes = (passport, router, upload) => {
                 const profile = yield Profile_1.default.findById(user.profileId);
                 res.status(200).json(profile || {});
             }
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
+    router.get('/statistics', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const userId = req.user._id;
+            const albums = yield Album_1.default.find();
+            const result = [];
+            for (const album of albums) {
+                const tracks = yield Track_1.default.find({ _id: { $in: album.trackIds } });
+                const trackReviews = [];
+                for (const track of tracks) {
+                    const review = yield Review_1.default.findOne({ owner: track._id });
+                    if (review) {
+                        trackReviews.push({
+                            track,
+                            review
+                        });
+                    }
+                }
+                if (trackReviews.length > 0) {
+                    result.push({
+                        album,
+                        trackReviews
+                    });
+                }
+            }
+            res.status(200).json(result);
         }
         catch (err) {
             res.status(500).json({ error: err });

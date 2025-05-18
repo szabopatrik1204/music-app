@@ -1,0 +1,110 @@
+<!-- Kommentek táblázata -->
+<table mat-table [dataSource]="data" class="mat-elevation-z2 statistics-table" *ngIf="data.length > 0">
+  <!-- Album oszlop -->
+  <ng-container matColumnDef="albumName">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Album </th>
+    <td mat-cell *matCellDef="let row" [attr.rowspan]="row.comments.length || 1">
+      {{ row.albumName }}
+    </td>
+  </ng-container>
+
+  <!-- Track oszlop -->
+  <ng-container matColumnDef="trackTitle">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Track </th>
+    <td mat-cell *matCellDef="let row" [attr.rowspan]="row.comments.length || 1">
+      {{ row.trackTitle }}
+    </td>
+  </ng-container>
+
+  <!-- Kommentelő, Komment, Dátum oszlopok -->
+  <ng-container matColumnDef="commentNickname">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Kommentelő </th>
+    <td mat-cell *matCellDef="let row; let i = index">
+      <ng-container *ngIf="row.comments.length > 0; else noComment">
+        <div *ngFor="let comment of row.comments">
+          {{ comment.nickname }}
+        </div>
+      </ng-container>
+      <ng-template #noComment>
+        Nincs komment
+      </ng-template>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="commentText">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Komment </th>
+    <td mat-cell *matCellDef="let row">
+      <ng-container *ngIf="row.comments.length > 0">
+        <div *ngFor="let comment of row.comments">
+          {{ comment.text }}
+        </div>
+      </ng-container>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="commentDate">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Dátum </th>
+    <td mat-cell *matCellDef="let row">
+      <ng-container *ngIf="row.comments.length > 0">
+        <div *ngFor="let comment of row.comments">
+          {{ comment.createdAt | date:'medium' }}
+        </div>
+      </ng-container>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['albumName', 'trackTitle', 'commentNickname', 'commentText', 'commentDate']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['albumName', 'trackTitle', 'commentNickname', 'commentText', 'commentDate'];"></tr>
+</table>
+
+<!-- Like-ok táblázata -->
+<table mat-table [dataSource]="data" class="mat-elevation-z2 statistics-table" style="margin-top: 32px;" *ngIf="data.length > 0">
+  <ng-container matColumnDef="albumName">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Album </th>
+    <td mat-cell *matCellDef="let row">{{ row.albumName }}</td>
+  </ng-container>
+  <ng-container matColumnDef="trackTitle">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Track </th>
+    <td mat-cell *matCellDef="let row">{{ row.trackTitle }}</td>
+  </ng-container>
+  <ng-container matColumnDef="likes">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Like-olók </th>
+    <td mat-cell *matCellDef="let row">
+      <ng-container *ngIf="row.likes.length > 0; else noLike">
+        <span *ngFor="let nickname of row.likes; let last = last">
+          {{ nickname }}<span *ngIf="!last">, </span>
+        </span>
+      </ng-container>
+      <ng-template #noLike>Nincs like</ng-template>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="['albumName', 'trackTitle', 'likes']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['albumName', 'trackTitle', 'likes'];"></tr>
+</table>
+
+<!-- Megosztók táblázata -->
+<table mat-table [dataSource]="data" class="mat-elevation-z2 statistics-table" style="margin-top: 32px;" *ngIf="data.length > 0">
+  <ng-container matColumnDef="albumName">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Album </th>
+    <td mat-cell *matCellDef="let row">{{ row.albumName }}</td>
+  </ng-container>
+  <ng-container matColumnDef="trackTitle">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Track </th>
+    <td mat-cell *matCellDef="let row">{{ row.trackTitle }}</td>
+  </ng-container>
+  <ng-container matColumnDef="shared">
+    <th mat-header-cell *matHeaderCellDef class="primary-header"> Megosztók </th>
+    <td mat-cell *matCellDef="let row">
+      <ng-container *ngIf="row.shared.length > 0; else noShared">
+        <span *ngFor="let nickname of row.shared; let last = last">
+          {{ nickname }}<span *ngIf="!last">, </span>
+        </span>
+      </ng-container>
+      <ng-template #noShared>Nincs megosztás</ng-template>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="['albumName', 'trackTitle', 'shared']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['albumName', 'trackTitle', 'shared'];"></tr>
+</table>
+
+<div *ngIf="data.length === 0" style="margin-top: 32px;">
+  Nincs statisztika.
+</div>

@@ -1,0 +1,15 @@
+.statistics-table {
+  width: 100%;
+  margin-bottom: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+:host ::ng-deep th.mat-header-cell.primary-header,
+:host ::ng-deep .mat-header-cell.primary-header {
+  background: #e16610 !important;
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+}
