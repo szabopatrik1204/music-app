@@ -1,4 +1,6 @@
 <form (ngSubmit)="onSubmit()" #albumForm="ngForm" class="album-create-form">
+  <div class="album-create-title">Album létrehozása</div>
+  <br />
   <mat-form-field appearance="fill" class="full-width">
     <mat-label>Album címe</mat-label>
     <input matInput type="text" [(ngModel)]="name" name="name" required>

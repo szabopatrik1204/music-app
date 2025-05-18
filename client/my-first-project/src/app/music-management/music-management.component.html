@@ -1,0 +1,37 @@
+<div *ngIf="unapprovedTracks.length === 0" class="no-tracks-msg">
+  Nincsen hitelesítendő zene
+</div>
+
+<div *ngFor="let track of unapprovedTracks" class="track-row">
+  <div class="track-info-row">
+    <div class="track-col">
+      <div>
+        <strong>Előadó:</strong> {{ track.artistNickname }}
+        <span class="status-icon">
+          <mat-icon *ngIf="track.isApproved" color="primary">check_circle</mat-icon>
+          <mat-icon *ngIf="!track.isApproved" color="warn">cancel</mat-icon>
+        </span>
+      </div>
+      <div><strong>Cím:</strong> {{ track.title }}</div>
+    </div>
+    <div class="track-col">
+      <div><strong>Album:</strong> {{ track.owner?.name || '-' }}</div>
+      <div><strong>Megjelenés:</strong> {{ track.releaseDate | date }}</div>
+    </div>
+    <div class="track-col audio-col">
+      <audio controls *ngIf="track.fileId">
+        <source [src]="'http://localhost:5000/app/track-file/' + track.fileId" type="audio/mpeg">
+        A böngésződ nem támogatja az audio lejátszást.
+      </audio>
+    </div>
+    <div class="track-col icon-col">
+      <button mat-icon-button color="primary" (click)="approveTrack(track)">
+        <mat-icon>check</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="deleteTrack(track)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+  <hr>
+</div>

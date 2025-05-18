@@ -1,0 +1,42 @@
+.track-info-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 220px 100px; // 4 oszlop: előadó/cím, album/megjelenés, lejátszó, ikonok
+  gap: 32px;
+  align-items: center;
+}
+
+.no-tracks-msg {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+:host {
+  display: block;
+  margin-top: 110px; // vagy akkora, mint a header magassága
+}
+
+.track-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.audio-col {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.icon-col {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.status-icon {
+  vertical-align: middle;
+  margin-left: 8px;
+}

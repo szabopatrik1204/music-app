@@ -1,5 +1,5 @@
 <form (ngSubmit)="onSubmit()" #uploadForm="ngForm" class="music-upload-form">
-  <mat-label>Zene feltöltés</mat-label><br />
+  <div class="upload-title">Zene feltöltés</div>
   <input type="file" (change)="onFileSelected($event)" required class="file-input">
 
   <mat-form-field appearance="fill" class="full-width">

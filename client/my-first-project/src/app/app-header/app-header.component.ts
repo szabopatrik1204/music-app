@@ -14,7 +14,6 @@ export class AppHeaderComponent {
   @Input() role: string | null = null;
 
   logout() {
-    // Például: hívj meg egy logout végpontot, majd irányítsd a login oldalra
     fetch('http://localhost:5000/app/logout', { method: 'POST', credentials: 'include' })
       .then(() => window.location.href = '/login');
   }

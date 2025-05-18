@@ -5,6 +5,7 @@ import { User } from '../model/User';
 import Track from '../model/Track';
 import Album from '../model/Album';
 import Review from '../model/Review';
+import Profile from '../model/Profile';
 import multer from 'multer';
 import { GridFsStorage } from 'multer-gridfs-storage';
 import mongoose from 'mongoose';
@@ -31,14 +32,52 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
                 owner: userId
             });
             await album.save();
-
-            // Hozzáadás a user albums tömbjéhez
             await User.findByIdAndUpdate(
                 userId,
                 { $push: { albumIds: album._id } }
             );
 
             res.status(200).json(album);
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
+    });
+
+    router.post('/approve-track', async (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const { trackId } = req.body;
+            if (!trackId) {
+                return res.status(400).json({ error: 'trackId is required' });
+            }
+            const track = await Track.findByIdAndUpdate(
+                trackId,
+                { isApproved: true },
+                { new: true }
+            );
+            if (!track) {
+                return res.status(404).json({ error: 'Track not found' });
+            }
+            res.status(200).json(track);
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
+    });
+
+    router.post('/delete-track', async (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const { trackId } = req.body;
+            if (!trackId) {
+                return res.status(400).json({ error: 'trackId is required' });
+            }
+            await Track.findByIdAndDelete(trackId);
+            await Review.deleteMany({ owner: trackId });
+            res.status(200).json({ message: 'Track deleted' });
         } catch (err) {
             res.status(500).json({ error: err });
         }
@@ -100,11 +139,20 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
     });
     
     router.get('/me', (req, res) => {
-    if (!req.isAuthenticated() || !req.user) {
-        return res.status(401).json({ error: 'Not authenticated' });
-    }
-    const { nickname, role } = req.user as any;
-    res.status(200).json({ nickname, role });
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        const { nickname, role } = req.user as any;
+        res.status(200).json({ nickname, role });
+    });
+
+    router.get('/unapproved-tracks', async (req: Request, res: Response) => {
+        try {
+            const tracks = await Track.find({ isApproved: false }).populate('owner', 'name');
+            res.status(200).json(tracks);
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
     });
 
     router.get('/get-my-albums', async (req: Request, res: Response) => {
@@ -121,20 +169,78 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
     });
 
     router.get('/get-all-tracks', async (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
         try {
-        const tracks = await Track.find().populate('owner', 'name');
+            // Csak azokat a trackeket kérjük le, amelyek jóvá vannak hagyva
+            const tracks = await Track.find({ isApproved: true }).populate('owner', 'name');
 
-        const trackIds = tracks.map(track => track._id);
-        const reviews = await Review.find({ owner: { $in: trackIds } });
+            const trackIds = tracks.map(track => track._id);
+            const reviews = await Review.find({ owner: { $in: trackIds } });
 
-        const tracksWithReviews = tracks.map(track => {
-            const review = reviews.find(r => r.owner.toString() === track._id.toString());
-            return {
-                ...track.toObject(),
-                review: review ? review.toObject() : { like: [], shared: [], comment: [] }
-            };
-        });
+            const tracksWithReviews = tracks.map(track => {
+                const review = reviews.find(r => r.owner.toString() === track._id.toString());
+                return {
+                    ...track.toObject(),
+                    review: review ? review.toObject() : { like: [], shared: [], comment: [] }
+                };
+            });
             res.status(200).json(tracksWithReviews);
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
+    });
+
+    router.get('/profile', async (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const userId = (req.user as any)._id;
+            const user: any = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            if (!user.profileId) {
+                res.status(200).json({});
+            } else {
+                const profile = await Profile.findById(user.profileId);
+                res.status(200).json(profile || {});
+            }
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
+    });
+
+    router.post('/profile', async (req: Request, res: Response) => {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const userId = (req.user as any)._id;
+            const user: any = await User.findById(userId);
+
+            let profile;
+            if (user.profileId) {
+                profile = await Profile.findByIdAndUpdate(
+                    user.profileId,
+                    req.body,
+                    { new: true, runValidators: true }
+                );
+            } else {
+                profile = new Profile(req.body);
+                await profile.save();
+                await User.findByIdAndUpdate(
+                    userId,
+                    { profileId: profile._id }
+                );
+            }
+
+            if (!profile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+            res.status(200).json(profile);
         } catch (err) {
             res.status(500).json({ error: err });
         }

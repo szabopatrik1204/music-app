@@ -24,7 +24,7 @@ export class MusicBrowserComponent {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.http.get<any[]>('http://localhost:5000/app/get-all-tracks')
+    this.http.get<any[]>('http://localhost:5000/app/get-all-tracks', { withCredentials: true })
       .subscribe(data => {
         this.tracks = data.map(track => ({
           ...track,

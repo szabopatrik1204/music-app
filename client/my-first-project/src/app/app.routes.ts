@@ -9,5 +9,7 @@ export const routes: Routes = [
     { path: 'music-upload', loadComponent: () => import('./music-upload/music-upload.component').then((c) => c.MusicUploadComponent), canActivate: [authGuard] },
     { path: 'album-create', loadComponent: () => import('./album-create/album-create.component').then((c) => c.AlbumCreateComponent), canActivate: [authGuard] },
     { path: 'music-browser', loadComponent: () => import('./music-browser/music-browser.component').then(c => c.MusicBrowserComponent), canActivate: [authGuard] },
+    { path: 'music-management', loadComponent: () => import('./music-management/music-management.component').then(c => c.MusicManagementComponent), canActivate: [authGuard] },
+    { path: 'artist-profile', loadComponent: () => import('./artist-profile/artist-profile.component').then(c => c.ArtistProfileComponent), canActivate: [authGuard] },
     { path: '**', redirectTo: 'login' }
 ];

@@ -1,0 +1,28 @@
+<form *ngIf="profile" (ngSubmit)="updateProfile()" class="artist-profile-form">
+  <div class="profile-title">Profil</div>
+  <br />
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Hobbi</mat-label>
+    <input matInput [(ngModel)]="profile.hobby" name="hobby">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Műfaj</mat-label>
+    <input matInput [(ngModel)]="profile.genre" name="genre">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Helyszín</mat-label>
+    <input matInput [(ngModel)]="profile.location" name="location">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Születési dátum</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="profile.birthDate" name="birthDate">
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Update</button>
+</form>

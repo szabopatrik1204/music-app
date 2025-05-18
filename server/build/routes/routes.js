@@ -18,6 +18,7 @@ const User_1 = require("../model/User");
 const Track_1 = __importDefault(require("../model/Track"));
 const Album_1 = __importDefault(require("../model/Album"));
 const Review_1 = __importDefault(require("../model/Review"));
+const Profile_1 = __importDefault(require("../model/Profile"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const mongodb_1 = require("mongodb");
 const configureRoutes = (passport, router, upload) => {
@@ -39,9 +40,44 @@ const configureRoutes = (passport, router, upload) => {
                 owner: userId
             });
             yield album.save();
-            // Hozzáadás a user albums tömbjéhez
             yield User_1.User.findByIdAndUpdate(userId, { $push: { albumIds: album._id } });
             res.status(200).json(album);
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
+    router.post('/approve-track', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const { trackId } = req.body;
+            if (!trackId) {
+                return res.status(400).json({ error: 'trackId is required' });
+            }
+            const track = yield Track_1.default.findByIdAndUpdate(trackId, { isApproved: true }, { new: true });
+            if (!track) {
+                return res.status(404).json({ error: 'Track not found' });
+            }
+            res.status(200).json(track);
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
+    router.post('/delete-track', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const { trackId } = req.body;
+            if (!trackId) {
+                return res.status(400).json({ error: 'trackId is required' });
+            }
+            yield Track_1.default.findByIdAndDelete(trackId);
+            yield Review_1.default.deleteMany({ owner: trackId });
+            res.status(200).json({ message: 'Track deleted' });
         }
         catch (err) {
             res.status(500).json({ error: err });
@@ -104,6 +140,15 @@ const configureRoutes = (passport, router, upload) => {
         const { nickname, role } = req.user;
         res.status(200).json({ nickname, role });
     });
+    router.get('/unapproved-tracks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const tracks = yield Track_1.default.find({ isApproved: false }).populate('owner', 'name');
+            res.status(200).json(tracks);
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
     router.get('/get-my-albums', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!req.isAuthenticated() || !req.user) {
             return res.status(401).json({ error: 'Not authenticated' });
@@ -118,8 +163,12 @@ const configureRoutes = (passport, router, upload) => {
         }
     }));
     router.get('/get-all-tracks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
         try {
-            const tracks = yield Track_1.default.find().populate('owner', 'name');
+            // Csak azokat a trackeket kérjük le, amelyek jóvá vannak hagyva
+            const tracks = yield Track_1.default.find({ isApproved: true }).populate('owner', 'name');
             const trackIds = tracks.map(track => track._id);
             const reviews = yield Review_1.default.find({ owner: { $in: trackIds } });
             const tracksWithReviews = tracks.map(track => {
@@ -127,6 +176,53 @@ const configureRoutes = (passport, router, upload) => {
                 return Object.assign(Object.assign({}, track.toObject()), { review: review ? review.toObject() : { like: [], shared: [], comment: [] } });
             });
             res.status(200).json(tracksWithReviews);
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
+    router.get('/profile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const userId = req.user._id;
+            const user = yield User_1.User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            if (!user.profileId) {
+                res.status(200).json({});
+            }
+            else {
+                const profile = yield Profile_1.default.findById(user.profileId);
+                res.status(200).json(profile || {});
+            }
+        }
+        catch (err) {
+            res.status(500).json({ error: err });
+        }
+    }));
+    router.post('/profile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.isAuthenticated() || !req.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+        try {
+            const userId = req.user._id;
+            const user = yield User_1.User.findById(userId);
+            let profile;
+            if (user.profileId) {
+                profile = yield Profile_1.default.findByIdAndUpdate(user.profileId, req.body, { new: true, runValidators: true });
+            }
+            else {
+                profile = new Profile_1.default(req.body);
+                yield profile.save();
+                yield User_1.User.findByIdAndUpdate(userId, { profileId: profile._id });
+            }
+            if (!profile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+            res.status(200).json(profile);
         }
         catch (err) {
             res.status(500).json({ error: err });

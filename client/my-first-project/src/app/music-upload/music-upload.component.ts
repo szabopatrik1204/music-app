@@ -9,11 +9,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-music-upload',
   standalone: true,
-  imports: [FormsModule, CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatIcon],
+  imports: [FormsModule, CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatIcon, MatSnackBarModule],
   templateUrl: './music-upload.component.html',
   styleUrl: './music-upload.component.scss'
 })
@@ -25,7 +26,7 @@ selectedFile: File | null = null;
   releaseDate = '';
   albums: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.http.get<any[]>('http://localhost:5000/app/get-my-albums', { withCredentials: true })
@@ -50,7 +51,13 @@ selectedFile: File | null = null;
     this.http.post('http://localhost:5000/app/upload-music', formData, { withCredentials: true })
       .subscribe(res => {
         console.log(res);
-        // sikeres feltöltés kezelése
+        this.openSnackBar('Zene sikeresen feltöltve.', 3000);
       });
+  }
+
+  openSnackBar(message: string, duration: number) {
+    this.snackBar.open(message, 'Bezárás', {
+      duration: duration,
+    });
   }
 }

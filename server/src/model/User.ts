@@ -17,7 +17,7 @@ interface IUser extends Document {
     address?: string;
     nickname?: string;
     password: string;
-    profileId?: mongoose.Types.ObjectId;
+    profileId: { type: Schema.Types.ObjectId, ref: 'Profile' }
     albumIds?: mongoose.Types.ObjectId[];
     role?: UserRole;
     comparePassword: (candidatePassword: string, callback: (error: Error | null, isMatch: boolean) => void) => void;
