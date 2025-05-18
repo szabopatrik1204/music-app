@@ -1,15 +1,53 @@
 .statistics-table {
-  width: 100%;
+  width: 90%;
   margin-bottom: 32px;
   border-radius: 6px;
   overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  box-shadow: 0 2px 8px #0001;
 }
 
-:host ::ng-deep th.mat-header-cell.primary-header,
-:host ::ng-deep .mat-header-cell.primary-header {
-  background: #e16610 !important;
-  color: #fff !important;
+.statistics-table th.primary-header {
+  background: #e16610;
+  color: #333;
   font-weight: bold;
   font-size: 1.05rem;
   letter-spacing: 0.5px;
+  text-align: left;
+  padding: 10px 12px;
+}
+
+.statistics-table th,
+.statistics-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #ececec;
+}
+
+.statistics-table tr:last-child td {
+  border-bottom: none;
+}
+
+.table-separator {
+  border: none;
+  border-top: 2px dashed #e16610;
+  margin: 36px 0 36px 0;
+  height: 0;
+  background: none;
+}
+
+.no-statistics {
+  text-align: center;
+  color: #888;
+  font-size: 1.2rem;
+  margin-top: 32px;
+  font-style: italic;
+}
+
+.statistics-wrapper {
+  margin-top: 110px;
 }

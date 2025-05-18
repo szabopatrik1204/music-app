@@ -172,7 +172,6 @@ const configureRoutes = (passport, router, upload) => {
             return res.status(401).json({ error: 'Not authenticated' });
         }
         try {
-            // Csak azokat a trackeket kérjük le, amelyek jóvá vannak hagyva
             const tracks = yield Track_1.default.find({ isApproved: true }).populate('owner', 'name');
             const trackIds = tracks.map(track => track._id);
             const reviews = yield Review_1.default.find({ owner: { $in: trackIds } });

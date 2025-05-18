@@ -63,7 +63,6 @@ export class MusicBrowserComponent {
   }
 
   shareTrack(track: any) {
-    // Itt lehet megosztás logika (pl. link másolás)
     alert('Megosztás: ' + track.title);
   }
 

@@ -1,6 +1,6 @@
 .track-info-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 220px 100px; // 4 oszlop: előadó/cím, album/megjelenés, lejátszó, ikonok
+  grid-template-columns: 1fr 1fr 220px 100px;
   gap: 32px;
   align-items: center;
 }
@@ -14,7 +14,7 @@
 
 :host {
   display: block;
-  margin-top: 110px; // vagy akkora, mint a header magassága
+  margin-top: 110px;
 }
 
 .track-col {

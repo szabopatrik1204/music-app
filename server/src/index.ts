@@ -16,14 +16,6 @@ const app = express();
 const port = 5000;
 const dbUrl = 'mongodb://localhost:6000/my_db';
 
-// mongodb connection
-// mongoose.connect(dbUrl).then((_) => {
-//     console.log('Successfully connected to MongoDB.');
-// }).catch(error => {
-//     console.log(error);
-//     return;
-// });
-
 const whitelist = ['*', 'http://localhost:4200']
 const corsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allowed?: boolean) => void) => {
@@ -59,12 +51,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 configurePassport(passport);
-
-// app.use('/app', configureRoutes(passport, express.Router()));
-
-// app.listen(port, () => {
-//     console.log('Server is listening on port ' + port.toString());
-// });
 
 mongoose.connect(dbUrl)
   .then(() => {

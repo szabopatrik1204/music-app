@@ -182,7 +182,6 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
             return res.status(401).json({ error: 'Not authenticated' });
         }
         try {
-            // Csak azokat a trackeket kérjük le, amelyek jóvá vannak hagyva
             const tracks = await Track.find({ isApproved: true }).populate('owner', 'name');
 
             const trackIds = tracks.map(track => track._id);

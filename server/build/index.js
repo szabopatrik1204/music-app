@@ -17,13 +17,6 @@ const multer_gridfs_storage_1 = require("multer-gridfs-storage");
 const app = (0, express_1.default)();
 const port = 5000;
 const dbUrl = 'mongodb://localhost:6000/my_db';
-// mongodb connection
-// mongoose.connect(dbUrl).then((_) => {
-//     console.log('Successfully connected to MongoDB.');
-// }).catch(error => {
-//     console.log(error);
-//     return;
-// });
 const whitelist = ['*', 'http://localhost:4200'];
 const corsOptions = {
     origin: (origin, callback) => {
@@ -53,10 +46,6 @@ app.use(passport_1.default.session());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 (0, passport_2.configurePassport)(passport_1.default);
-// app.use('/app', configureRoutes(passport, express.Router()));
-// app.listen(port, () => {
-//     console.log('Server is listening on port ' + port.toString());
-// });
 mongoose_1.default.connect(dbUrl)
     .then(() => {
     const storage = new multer_gridfs_storage_1.GridFsStorage({
