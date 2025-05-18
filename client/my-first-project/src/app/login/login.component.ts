@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { User } from '../shared/model/User';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +23,7 @@ export class LoginComponent {
   errorMessage: string = '';
   isLoading = false;
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private app: AppComponent) { }
 
   login() {
     this.isLoading = true;
@@ -29,24 +31,25 @@ export class LoginComponent {
       if (this.email && this.password) {
         this.errorMessage = '';
         this.authService.login(this.email, this.password).subscribe({
-          next: (data) => {
+          next: (data: any) => {
             if (data) {
-              // navigation
-              console.log(data);
               this.isLoading = false;
-              // this.router.navigateByUrl('/music-browser');
-              // this.router.navigateByUrl('/album-create');
-              this.router.navigateByUrl('/music-upload');
-              // this.router.navigateByUrl('/user-management');
+              this.app.setRole(data.role); // Itt beállítod!
+              if (data.role === 'listener') {
+                this.router.navigateByUrl('/music-browser');
+              } else if (data.role === 'artist') {
+                this.router.navigateByUrl('/music-upload');
+              } else if (data.role === 'admin') {
+                this.router.navigateByUrl('/user-management');
+              }
             }
-          }, error: (err) => {
-            console.log(err);
-            this.isLoading = false;
           },
-        })
+          error: (err) => {
+            this.isLoading = false;
+          }
+        });
       } else {
         this.isLoading = false;
-        this.errorMessage = 'Form is empty.';
       }
     }, 1500);
   }

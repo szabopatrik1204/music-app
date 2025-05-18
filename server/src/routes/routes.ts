@@ -99,12 +99,12 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
         }
     });
     
-    router.get('/me', (req: Request, res: Response) => {
-        if (!req.isAuthenticated() || !req.user) {
-            return res.status(401).json({ error: 'Not authenticated' });
-        }
-        const nickname = (req.user as any).nickname;
-        res.status(200).json({ nickname });
+    router.get('/me', (req, res) => {
+    if (!req.isAuthenticated() || !req.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+    const { nickname, role } = req.user as any;
+    res.status(200).json({ nickname, role });
     });
 
     router.get('/get-my-albums', async (req: Request, res: Response) => {

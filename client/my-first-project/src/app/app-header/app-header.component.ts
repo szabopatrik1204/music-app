@@ -1,12 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-app-header',
   standalone: true,
-  imports: [],
+  imports: [NgIf, MatButtonModule, RouterModule],
   templateUrl: './app-header.component.html',
   styleUrl: './app-header.component.scss'
 })
 export class AppHeaderComponent {
+  @Input() role: string | null = null;
+
+  logout() {
+    // Például: hívj meg egy logout végpontot, majd irányítsd a login oldalra
+    fetch('http://localhost:5000/app/logout', { method: 'POST', credentials: 'include' })
+      .then(() => window.location.href = '/login');
+  }
 
 }

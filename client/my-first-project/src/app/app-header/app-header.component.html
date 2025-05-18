@@ -1,4 +1,34 @@
 <div class="header-container">
   <img src="assets/walkman.png" alt="Logo" class="header-logo" />
-<!--  <span class="header-title">Music App</span> -->
+
+  <ng-container *ngIf="role === 'listener'">
+    <button mat-raised-button color="primary" class="header-btn" routerLink="/music-browser">
+      Music Browser
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="role === 'admin'">
+    <button mat-raised-button color="primary" class="header-btn" routerLink="/user-management">
+      User Management
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="role === 'artist'">
+    <button mat-raised-button color="primary" class="header-btn" routerLink="/album-create">
+      Album Upload
+    </button>
+    <button mat-raised-button color="primary" class="header-btn" routerLink="/music-upload">
+      Music Upload
+    </button>
+  </ng-container>
+
+    <button
+    *ngIf="role"
+    mat-raised-button
+    color="accent"
+    class="header-btn logout-btn"
+    (click)="logout()"
+  >
+    Logout
+  </button>
 </div>

@@ -7,13 +7,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
 
-// FormsModule, ReactiveFormsModule
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatOption, MatSelect],
+  imports: [ReactiveFormsModule, CommonModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatOption, MatSelect, MatSelectModule, MatSnackBarModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })
@@ -23,7 +24,8 @@ export class SignupComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private location: Location,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -63,17 +65,24 @@ export class SignupComponent implements OnInit {
       this.authService.register(this.signupForm.value).subscribe({
         next: (data) => {
           console.log(data);
+          this.openSnackBar('Registration successful!', 3000);
         }, error: (err) => {
           console.log(err);
+          this.openSnackBar('Registration failed. Please try again.', 3000);
         }
       });
     } else {
+      console.log(this.signupForm.errors);
       console.log('Form is not valid.');
     }
   }
 
   goBack() {
     this.location.back();
+  }
+
+  openSnackBar(message: string, duration: number) {
+    this.snackBar.open(message, undefined, { duration: duration });
   }
 
 }

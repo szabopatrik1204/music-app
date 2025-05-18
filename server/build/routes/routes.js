@@ -101,8 +101,8 @@ const configureRoutes = (passport, router, upload) => {
         if (!req.isAuthenticated() || !req.user) {
             return res.status(401).json({ error: 'Not authenticated' });
         }
-        const nickname = req.user.nickname;
-        res.status(200).json({ nickname });
+        const { nickname, role } = req.user;
+        res.status(200).json({ nickname, role });
     });
     router.get('/get-my-albums', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!req.isAuthenticated() || !req.user) {
