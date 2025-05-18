@@ -216,22 +216,24 @@ const configureRoutes = (passport, router, upload) => {
             const albums = yield Album_1.default.find();
             const result = [];
             for (const album of albums) {
-                const tracks = yield Track_1.default.find({ _id: { $in: album.trackIds } });
-                const trackReviews = [];
-                for (const track of tracks) {
-                    const review = yield Review_1.default.findOne({ owner: track._id });
-                    if (review) {
-                        trackReviews.push({
-                            track,
-                            review
+                if (album.owner == userId) {
+                    const tracks = yield Track_1.default.find({ _id: { $in: album.trackIds } });
+                    const trackReviews = [];
+                    for (const track of tracks) {
+                        const review = yield Review_1.default.findOne({ owner: track._id });
+                        if (review) {
+                            trackReviews.push({
+                                track,
+                                review
+                            });
+                        }
+                    }
+                    if (trackReviews.length > 0) {
+                        result.push({
+                            album,
+                            trackReviews
                         });
                     }
-                }
-                if (trackReviews.length > 0) {
-                    result.push({
-                        album,
-                        trackReviews
-                    });
                 }
             }
             res.status(200).json(result);

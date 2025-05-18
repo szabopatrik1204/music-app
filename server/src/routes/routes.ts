@@ -232,24 +232,26 @@ export const configureRoutes = (passport: PassportStatic, router: Router, upload
 
             const result = [];
             for (const album of albums) {
-                const tracks = await Track.find({ _id: { $in: album.trackIds } });
+                if (album.owner == userId) {
+                    const tracks = await Track.find({ _id: { $in: album.trackIds } });
 
-                const trackReviews = [];
-                for (const track of tracks) {
-                    const review = await Review.findOne({ owner: track._id });
-                    if (review) {
-                        trackReviews.push({
-                            track,
-                            review
+                    const trackReviews = [];
+                    for (const track of tracks) {
+                        const review = await Review.findOne({ owner: track._id });
+                        if (review) {
+                            trackReviews.push({
+                                track,
+                                review
+                            });
+                        }
+                    }
+
+                    if (trackReviews.length > 0) {
+                        result.push({
+                            album,
+                            trackReviews
                         });
                     }
-                }
-
-                if (trackReviews.length > 0) {
-                    result.push({
-                        album,
-                        trackReviews
-                    });
                 }
             }
 
