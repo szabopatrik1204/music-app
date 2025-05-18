@@ -12,6 +12,21 @@
   box-sizing: border-box;
 }
 
+.user-info {
+  margin-right: 16px;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: #333;
+  align-self: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 8px;
+}
+
 .header-logo {
   height: 100px;
   margin-right: 16px;

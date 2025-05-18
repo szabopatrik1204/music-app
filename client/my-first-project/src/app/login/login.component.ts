@@ -34,7 +34,8 @@ export class LoginComponent {
           next: (data: any) => {
             if (data) {
               this.isLoading = false;
-              this.app.setRole(data.role); // Itt beállítod!
+              this.app.setRole(data.role);
+              this.app.setNickname(data.nickname);
               if (data.role === 'listener') {
                 this.router.navigateByUrl('/music-browser');
               } else if (data.role === 'artist') {

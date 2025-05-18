@@ -28,13 +28,12 @@
     </button>
   </ng-container>
 
-    <button
-    *ngIf="role"
-    mat-raised-button
-    color="accent"
-    class="header-btn logout-btn"
-    (click)="logout()"
-  >
-    Logout
-  </button>
+  <div class="header-right">
+    <span *ngIf="role && nickname" class="user-info">
+      {{ nickname + '@' + role }}
+    </span>
+    <button *ngIf="role" mat-raised-button color="accent" class="header-btn logout-btn" (click)="logout()">
+      Logout
+    </button>
+  </div>
 </div>

@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 })
 export class AppHeaderComponent {
   @Input() role: string | null = null;
+  @Input() nickname: string | null = null;
 
   logout() {
     fetch('http://localhost:5000/app/logout', { method: 'POST', credentials: 'include' })

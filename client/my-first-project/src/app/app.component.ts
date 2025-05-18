@@ -23,6 +23,7 @@ import { NgIf } from '@angular/common';
 })
 export class AppComponent {
   userRole: string | null = null;
+  nickname: string | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -30,11 +31,16 @@ export class AppComponent {
     this.userRole = role;
   }
 
+  setNickname(nickname: string) {
+    this.nickname = nickname;
+  }
+
   ngOnInit() {
-    this.http.get<{ role: string }>('http://localhost:5000/app/me', { withCredentials: true })
+    this.http.get<{ role: string; nickname: string }>('http://localhost:5000/app/me', { withCredentials: true })
       .subscribe({
         next: (user) => {
           this.userRole = user.role;
+          this.nickname = user.nickname;
           console.log('User role:', this.userRole);
         },
         error: () => this.userRole = null
