@@ -52,10 +52,11 @@ app.use(express.urlencoded({ extended: true }));
 
 configurePassport(passport);
 
-mongoose.connect(dbUrl)
+// TODO if environment variable is set
+mongoose.connect(process.env.MONGO_URL || "")
   .then(() => {
     const storage = new GridFsStorage({
-        url: dbUrl,
+        url: process.env.MONGO_URL || "",
         file: (req, file) => ({
             filename: file.originalname,
             bucketName: 'music'
