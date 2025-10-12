@@ -18,6 +18,7 @@ services:
       - mongo
     environment:
       MONGO_URL: mongodb://mongo:27017/music-db
+    command: ["node", "build/src/server.js"]      # Runs the connection to Mongo DB separately
 
   frontend:
     build:
