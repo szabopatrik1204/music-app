@@ -53,7 +53,7 @@ pipeline {
             }
         }
         
-        /*
+
         stage('Deploy') {
             steps {
                 dir('devops') {
@@ -62,9 +62,8 @@ pipeline {
             }
         }
 
-        TODO
-        */
 
+        /*
         stage('Deploy') {
             steps {
                 sshagent(['music-deploy-key']) {
@@ -83,7 +82,8 @@ pipeline {
                 }
             }
         }
-        
+        */
+
         stage('Cleanup') {
             steps {
                 deleteDir()
