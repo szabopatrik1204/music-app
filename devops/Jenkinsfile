@@ -93,10 +93,10 @@ pipeline {
     
     post {
         success {
-            echo 'Pipeline sikeresen lefutott.'
+            echo 'Pipeline sikeresen lefutott!'
         }
         failure {
-            echo 'Pipeline végrehajtása sikertelen volt'
+            echo 'Pipeline végrehajtása sikertelen volt!'
         }
     }
     
