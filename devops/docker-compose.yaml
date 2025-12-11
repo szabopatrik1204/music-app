@@ -6,6 +6,8 @@ services:
       - "6000:27017"
     volumes:
       - mongo_data:/data/db
+    restart: 
+      always
 
   backend:
     build:
@@ -18,7 +20,9 @@ services:
       - mongo
     environment:
       MONGO_URL: mongodb://mongo:27017/music-db
-    command: ["node", "build/src/server.js"]      # Runs the connection to Mongo DB separately
+    command: ["node", "build/src/server.js"]    # Runs the connection to Mongo DB separately
+    restart: 
+      always
 
   frontend:
     build:
@@ -29,6 +33,8 @@ services:
       - "4200:4200"
     depends_on:
       - backend
+    restart: 
+      always
 
 volumes:
   mongo_data:

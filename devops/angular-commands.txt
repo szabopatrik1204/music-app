@@ -1,0 +1,8 @@
+ng test --browsers=ChromeHeadless --watch=false
+
+sudo docker build -t angular-dev-env -f Dockerfile_angular-dev-env .
+
+# Docker registry
+sudo docker run -it --rm -p 5001:5001 registry:2
+sudo docker tag angular-dev-env:latest localhost:5001/angular-dev-env:latest
+sudo docker push localhost:5001/angular-dev-env

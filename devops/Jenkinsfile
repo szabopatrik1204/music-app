@@ -1,0 +1,103 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs 'NodeJS 20'
+    }
+    
+    environment {
+        GITHUB_REPO = 'https://github.com/szabopatrik1204/music-app.git'
+        BRANCH = 'main'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: env.BRANCH, url: env.GITHUB_REPO
+            }
+        }
+        
+        stage('Backend Install Dependencies') {
+            steps {
+                dir('server') {
+                    sh 'npm install'
+                }
+            }
+        }
+ /*       
+        stage('Lint') {
+            steps {
+                sh 'npm run lint'
+            }
+        }
+*/        
+        stage('Backend Test') {
+            steps {                
+                dir('server') {
+                    sh 'npm run test'
+                }
+            }
+        }
+
+        stage('Backend Build') {
+            steps {
+                dir('server') {
+                    sh 'npm run build'
+                }
+            }
+        }
+        
+        stage('Archive Backend Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'server/build/**/*', fingerprint: true
+            }
+        }
+        
+        /*
+        stage('Deploy') {
+            steps {
+                dir('devops') {
+                    sh 'docker compose up -d --build'
+                }
+            }
+        }
+
+        TODO
+        */
+
+        stage('Deploy') {
+            steps {
+                sshagent(['music-deploy-key']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@YOUR_SERVER_IP "
+                            mkdir -p /var/www/music-app &&
+                            cd /var/www/music-app &&
+
+                            git pull || true &&
+
+                            docker compose pull &&
+                            docker compose down &&
+                            docker compose up -d --build
+                        "
+                    '''
+                }
+            }
+        }
+        
+        stage('Cleanup') {
+            steps {
+                deleteDir()
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Pipeline sikeresen lefutott.'
+        }
+        failure {
+            echo 'Pipeline végrehajtása sikertelen volt'
+        }
+    }
+    
+}
