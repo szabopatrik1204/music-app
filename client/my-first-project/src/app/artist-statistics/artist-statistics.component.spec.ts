@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ArtistStatisticsComponent } from './artist-statistics.component';
-import { COMMON_TEST_IMPORTS, COMMON_TEST_PROVIDERS } from '../../test-helpers/test-setup';
 
 describe('ArtistStatisticsComponent', () => {
   let component: ArtistStatisticsComponent;
@@ -9,10 +8,9 @@ describe('ArtistStatisticsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      // standalone component must be imported, not declared
-      imports: [ArtistStatisticsComponent, ...COMMON_TEST_IMPORTS],
-      providers: [...COMMON_TEST_PROVIDERS],
-      schemas: [NO_ERRORS_SCHEMA]
+
+      imports: [ArtistStatisticsComponent, HttpClientTestingModule],
+    
     }).compileComponents();
 
     fixture = TestBed.createComponent(ArtistStatisticsComponent);
