@@ -1,0 +1,19 @@
+services:
+  deploy-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: deploy_server
+    networks:
+      - cicd_network
+    ports:
+      - "2222:22"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../:/workspace:rw
+      - ./authorized_keys/jenkins_deploy_key.pub:/home/deploy/.ssh/authorized_keys:ro
+    restart: unless-stopped
+
+networks:
+  cicd_network:
+    external: true

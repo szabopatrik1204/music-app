@@ -8,9 +8,11 @@ pipeline {
     environment {
         GITHUB_REPO = 'https://github.com/szabopatrik1204/music-app.git'
         BRANCH = 'main'
+        JENKINS_PUB_KEY = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAeCmsEBpZRJMaqnPz9Ohldzs4MOxm1tWf7NREdzsk5J jenkins-deploy'
     }
     
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: env.BRANCH, url: env.GITHUB_REPO
@@ -52,7 +54,7 @@ pipeline {
                 archiveArtifacts artifacts: 'server/build/**/*', fingerprint: true
             }
         }
-        
+        /*
 
         stage('Deploy') {
             steps {
@@ -61,30 +63,45 @@ pipeline {
                 }
             }
         }
+        */
 
-
-        /*
-        stage('Deploy') {
+        stage('List Credentials') {
             steps {
-                sshagent(['music-deploy-key']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@YOUR_SERVER_IP "
-                            mkdir -p /var/www/music-app &&
-                            cd /var/www/music-app &&
-
-                            git pull || true &&
-
-                            docker compose pull &&
-                            docker compose down &&
-                            docker compose up -d --build
-                        "
-                    '''
+                script {
+                    def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                        com.cloudbees.plugins.credentials.common.StandardCredentials.class,
+                        Jenkins.instance,
+                        null,
+                        null
+                    )
+                    echo "FOUND CREDS:"
+                    creds.each { c -> echo "- ${c.id}" }
                 }
             }
         }
-        
 
-        */
+        stage('Debug SSH') {
+            steps {
+                sshagent(['deploy-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no -vvv deploy@deploy_server "echo OK"'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sshagent(['deploy-key']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no deploy@deploy_server '
+                        cd /workspace/music-app/devops &&
+                        docker compose pull &&
+                        docker compose up -d --build
+                    '
+                    """
+                }
+            }
+        }
+
 
         stage('Cleanup') {
             steps {
