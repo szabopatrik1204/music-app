@@ -1,6 +1,8 @@
 services:
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: .
+      dockerfile: Dockerfile_jenkins
     container_name: jenkins
     user: root
     ports:
@@ -8,3 +10,5 @@ services:
       - "50000:50000"
     volumes:
       - /home/szabo/jenkins_home:/var/jenkins_home
+    environment:
+      - DOCKER_HOST=tcp://docker:2375

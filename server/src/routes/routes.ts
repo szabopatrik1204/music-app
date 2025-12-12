@@ -14,7 +14,7 @@ import { GridFSBucket } from 'mongodb';
 export const configureRoutes = (passport: PassportStatic, router: Router, upload: multer.Multer): Router => {
 
     router.get('/', (req: Request, res: Response) => {
-        let myClass = new MainClass();
+        const myClass = new MainClass();
         res.status(200).send('Hello, World!');
     });
 
