@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --max-warnings=1000",
+    "lint:fix": "eslint . --fix --max-warnings=1000",
     "test": "npx jest",
     "build": "node node_modules/typescript/bin/tsc",
     "start": "node build/index.js"

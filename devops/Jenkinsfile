@@ -26,13 +26,15 @@ pipeline {
                 }
             }
         }
- /*       
+  
         stage('Lint') {
             steps {
-                sh 'npm run lint'
+                dir('server') {
+                    sh 'npm run lint'
+                }
             }
         }
-*/        
+ 
         stage('Backend Test') {
             steps {                
                 dir('server') {
@@ -54,7 +56,6 @@ pipeline {
                 archiveArtifacts artifacts: 'server/build/**/*', fingerprint: true
             }
         }
-        /*
 
         stage('Deploy') {
             steps {
@@ -63,45 +64,6 @@ pipeline {
                 }
             }
         }
-        */
-
-        stage('List Credentials') {
-            steps {
-                script {
-                    def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                        com.cloudbees.plugins.credentials.common.StandardCredentials.class,
-                        Jenkins.instance,
-                        null,
-                        null
-                    )
-                    echo "FOUND CREDS:"
-                    creds.each { c -> echo "- ${c.id}" }
-                }
-            }
-        }
-
-        stage('Debug SSH') {
-            steps {
-                sshagent(['deploy-key']) {
-                    sh 'ssh -o StrictHostKeyChecking=no -vvv deploy@deploy_server "echo OK"'
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sshagent(['deploy-key']) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no deploy@deploy_server '
-                        cd /workspace/music-app/devops &&
-                        docker compose pull &&
-                        docker compose up -d --build
-                    '
-                    """
-                }
-            }
-        }
-
 
         stage('Cleanup') {
             steps {
