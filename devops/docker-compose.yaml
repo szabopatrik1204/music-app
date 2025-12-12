@@ -36,5 +36,10 @@ services:
     restart: 
       always
 
+  sonarqube:
+    image: sonarqube:lts
+    ports:
+      - "9000:9000"
+
 volumes:
   mongo_data:
