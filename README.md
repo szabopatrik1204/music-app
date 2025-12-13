@@ -1,6 +1,7 @@
 # music-app-devops
 
-**JENKINS** 
+**JENKINS**
+
 cd devops
 
 sudo docker build -t my-jenkins -f Dockerfile_jenkins .
