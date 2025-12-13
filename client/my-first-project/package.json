@@ -2,6 +2,8 @@
   "name": "my-first-project",
   "version": "0.0.1",
   "scripts": {
+    "lint": "eslint . --max-warnings=1000",
+    "lint:fix": "eslint . --fix --max-warnings=1000",
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "npx ng build",
@@ -30,13 +32,20 @@
     "@angular-devkit/build-angular": "^17.3.1",
     "@angular/cli": "^17.3.1",
     "@angular/compiler-cli": "^17.3.0",
+    "@eslint/js": "^9.39.2",
     "@types/jasmine": "~5.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript-eslint/parser": "^8.49.0",
+    "eslint": "^9.39.2",
+    "globals": "^16.5.0",
     "jasmine-core": "~5.1.0",
+    "jiti": "^2.6.1",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.4.2"
+    "typescript": "~5.4.2",
+    "typescript-eslint": "^8.49.0"
   }
 }
