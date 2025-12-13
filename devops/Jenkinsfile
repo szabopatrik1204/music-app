@@ -55,7 +55,7 @@ pipeline {
             }
         }
         
-        stage('Lint Server Dockerfile') {
+        stage('HadoLint Server Dockerfile') {
             steps {
                 dir('server') {
                     sh '''
@@ -74,7 +74,7 @@ pipeline {
             }
         }
         
-        stage('Lint Client Dockerfile') {
+        stage('HadoLint Client Dockerfile') {
             steps {
                 dir('client/my-first-project') {
                     sh '''
@@ -117,7 +117,7 @@ pipeline {
             }
         }
   
-        stage('Lint') {
+        stage('ESLint') {
             steps {
                 dir('server') {
                     sh 'npm run lint'
@@ -138,7 +138,6 @@ pipeline {
         
         stage('Publish JUnit Results') {
             steps {
-                // Blue Ocean-ban is megjelenik a teszt riport
                 junit 'server/junit.xml'
             }
         }
