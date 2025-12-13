@@ -13,3 +13,12 @@ HadoLint: Hadolint is an open-source Dockerfile linter created to help developer
 and more efficient Dockerfiles. In modern software development, 
 containers are the foundation of scalable, portable applications, and Docker remains the most widely used container platform.
 
+JUnit
+
+Jenkins:
+    user: patrik
+    pwd: patrik
+    init pwd: 0aaa8880912346aa885cbb8d4962cca7
+
+Ocean Blue UI
+
