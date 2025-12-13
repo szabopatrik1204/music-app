@@ -4,14 +4,12 @@ USER root
 
 RUN apt-get update
 
-# Add Docker's official GPG key:
 RUN apt update
 RUN apt install -y ca-certificates curl
 RUN install -m 0755 -d /etc/apt/keyrings
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
 RUN chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add Docker repository
 RUN echo \
 "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
 https://download.docker.com/linux/debian bookworm stable" \
@@ -31,7 +29,6 @@ RUN echo "jenkins ALL=(ALL) NOPASSWD: /usr/bin/chown" >> /etc/sudoers.d/jenkins
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Install Docker Compose into /usr/bin so it's in PATH for jenkins user
 USER root
 
 RUN curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose \

@@ -1,0 +1,15 @@
+Sonar:
+user: admin
+pwd: patrik
+
+Trivy: Trivy is an open-source container vulnerability scanner specifically designed for container security. 
+It scans for vulnerabilities within the software packages, uncovers accidentally embedded secrets such as passwords, 
+and analyzes license information associated with the included software.
+
+ESLint: ESLint is a highly customizable, open-source JavaScript linter that statically analyzes your code to find and fix problems, 
+ensuring code quality, consistency, and adherence to standards without running the code
+
+HadoLint: Hadolint is an open-source Dockerfile linter created to help developers write better, safer, 
+and more efficient Dockerfiles. In modern software development, 
+containers are the foundation of scalable, portable applications, and Docker remains the most widely used container platform.
+

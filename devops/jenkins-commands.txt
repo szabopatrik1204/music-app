@@ -1,4 +1,4 @@
-sudo docker build -t my_jenkins -f Dockerfile_jenkins .
+sudo docker build -t my-jenkins -f Dockerfile_jenkins .
 
 mkdir jenkins_home
 
@@ -19,7 +19,7 @@ sudo docker run -it --rm \
 # Windowsra run command
 sudo docker run -it --rm \
   --name my-jenkins \
-  --network cicd_network \
+  --network devops_default \
   -p 8080:8080 \
   -p 50000:50000 \
   -v jenkins_home:/var/jenkins_home \
