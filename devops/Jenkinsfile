@@ -93,15 +93,6 @@ pipeline {
             }
         }
 
-
-        stage('Debug Workspace1') {
-            steps {
-                dir('server') {
-                    sh 'ls -R'
-                }
-            }
-        }
-
         stage('Scan Image with Trivy') {
             steps {
                 dir('server') {
@@ -114,14 +105,6 @@ pipeline {
                               ${IMAGE_NAME}:${IMAGE_TAG}
                         """
                     }
-                }
-            }
-        }
-
-        stage('Debug Workspace2') {
-            steps {
-                dir('server') {
-                    sh 'ls -R'
                 }
             }
         }
@@ -145,8 +128,18 @@ pipeline {
         stage('Backend Test') {
             steps {                
                 dir('server') {
-                    sh 'npx jest --ci --reporters=default --reporters=jest-junit'
+                    sh '''
+                    npm run
+                    npm run testci
+                    '''
                 }
+            }
+        }
+        
+        stage('Publish JUnit Results') {
+            steps {
+                // Blue Ocean-ban is megjelenik a teszt riport
+                junit 'server/junit.xml'
             }
         }
 
